@@ -17,10 +17,10 @@ function App() {
         type: 'COUNT',
         count: count + 1,
       };
-      navigator.serviceWorker.controller.postMessage(input, {});
+      navigator.serviceWorker.controller.postMessage(input);
     } else {
       console.log(
-        'navigator.serviceWorker NOT AVAILABLE',
+        'navigator.serviceWorker.controller NOT AVAILABLE',
         navigator.serviceWorker
       );
       navigator.serviceWorker.ready.then((registration) => {
@@ -33,10 +33,6 @@ function App() {
   }, [count, isSWReady]);
 
   useEffect(() => {
-    navigator.serviceWorker.addEventListener('controllerchange', function () {
-      console.log('New service worker has taken control');
-      location.reload();
-    });
     navigator.serviceWorker.ready.then((registration) => {
       navigator.serviceWorker.addEventListener('message', (event) => {
         const { type, count } = event.data;
@@ -45,8 +41,6 @@ function App() {
           setIsSWReady(true);
         }
       });
-
-      console.log(navigator.serviceWorker.controller, 'controller');
 
       registration.active.postMessage({
         type: 'GET_COUNT',
