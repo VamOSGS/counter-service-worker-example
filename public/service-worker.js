@@ -22,4 +22,21 @@ addEventListener('message', (event) => {
         });
     });
   }
+
+  setInterval(() => {
+    caches.open('counter-cache').then((cache) => {
+      cache
+        .match('timer')
+        .then((response) => {
+          if (response) {
+            return response.text();
+          }
+          return '0';
+        })
+        .then((currentValue) => {
+          const count = parseInt(currentValue, 10);
+          cache.put('timer', new Response((count + 1).toString()));
+        });
+    });
+  }, 1000);
 });
